@@ -103,4 +103,38 @@ resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly" # Allows nodes to pull images from ECR
 }
 
-# You can add additional policy attachments as required for your setup here.
+resource "local_file" "kubeconfig" {
+  content = <<EOF
+apiVersion: v1
+clusters:
+- cluster:
+    server: ${aws_eks_cluster.main.endpoint}
+    certificate-authority-data: ${aws_eks_cluster.main.certificate_authority.0.data}
+  name: kubernetes
+contexts:
+- context:
+    cluster: kubernetes
+    user: aws
+  name: aws
+current-context: aws
+kind: Config
+preferences: {}
+users:
+- name: aws
+  user:
+    exec:
+      apiVersion: client.authentication.k8s.io/v1beta1
+      command: aws
+      args:
+        - --region
+        - "${var.region}"
+        - "eks"
+        - "get-token"
+        - "--cluster-name"
+        - "${aws_eks_cluster.main.name}"
+      env:
+        - name: AWS_PROFILE
+          value: "${var.aws_profile}"
+EOF
+  filename = "/tmp/new-kubeconfig.conf"
+}

@@ -5,6 +5,13 @@ variable "region" {
   
 }
 
+variable "aws_profile" {
+  description = "The AWS profile to use"
+  type        = string
+  default     = "devops"
+  
+}
+
 variable "cluster_name" {
   description = "The name of the EKS cluster"
   type        = string
