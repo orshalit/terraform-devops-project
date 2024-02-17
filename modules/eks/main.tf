@@ -8,8 +8,9 @@ resource "aws_eks_cluster" "main" {
 
   version = var.eks_version
 
-  depends_on = [
-    aws_http_token_policy.eks,
+   depends_on = [
+    aws_iam_role_policy_attachment.eks_cluster_policy,
+    aws_iam_role_policy_attachment.eks_vpc_resource_policy,
   ]
 
   tags = {
