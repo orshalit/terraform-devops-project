@@ -21,7 +21,9 @@ resource "aws_subnet" "public_subnet" {
   map_public_ip_on_launch = true
   availability_zone       = var.availability_zones[count.index]
   tags = {
-    Name = "${var.public_subnet_name}_${count.index}"
+    Name                                        = "${var.public_subnet_name}_${count.index}"
+    "kubernetes.io/role/elb"                    = "1"
+    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   }
 }
 
@@ -58,10 +60,12 @@ resource "aws_route_table_association" "public_rta" {
 resource "aws_subnet" "private_subnet" {
   count             = 3
   vpc_id            = aws_vpc.main_vpc.id
-  cidr_block              = var.private_subnet_cidr[count.index]
+  cidr_block        = var.private_subnet_cidr[count.index]
   availability_zone = var.availability_zones[count.index]
   tags = {
-    Name = "${var.private_subnet_name}_${count.index}"
+    Name                                        = "${var.private_subnet_name}_${count.index}"
+    "kubernetes.io/role/internal-elb"           = "true"
+    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   }
 }
 
