@@ -33,7 +33,7 @@ variable "cluster_name" {
 variable "cluster_sg_id" {
   description = "The ID of the security group for the EKS cluster"
   type        = string
-  default     = "sg-0e50d9ac8d1d88833"  
+  default     = "sg-0e50d9ac8d1d88833"
 }
 
 variable "eks_version" {
@@ -69,7 +69,7 @@ variable "https_node_port" {
 variable "http_node_port" {
   description = "The port for the HTTP service"
   type        = number
-  default     = 31080  
+  default     = 31080
 }
 
 variable "node_group_instance_arns" {

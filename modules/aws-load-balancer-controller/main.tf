@@ -114,6 +114,6 @@ data "aws_iam_policy_document" "aws_load_balancer_controller_trust" {
 }
 
 resource "aws_iam_role" "aws_load_balancer_controller" {
-  name = "aws-load-balancer-controller-alb-role"
+  name               = "aws-load-balancer-controller-alb-role"
   assume_role_policy = data.aws_iam_policy_document.aws_load_balancer_controller_trust.json
 }

@@ -12,7 +12,7 @@ resource "helm_release" "nginx_ingress" {
 
   set {
     name  = "controller.service.type"
-    value = "NodePort"  # The ALB will route traffic to these NodePorts
+    value = "NodePort" # The ALB will route traffic to these NodePorts
   }
 
   set {
@@ -29,7 +29,7 @@ resource "helm_release" "nginx_ingress" {
     name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-subnets"
     value = var.public_subnet_ids
   }
-depends_on = [ aws_eks_node_group.main ]
+  depends_on = [aws_eks_node_group.main]
 }
 
 # data "aws_iam_policy_document" "alb_ingress_policy" {
@@ -179,7 +179,7 @@ resource "aws_lb_listener" "nginx_http" {
   load_balancer_arn = aws_lb.nginx_alb.arn
   port              = 80
   protocol          = "HTTP"
-  
+
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.nginx_tg_http.arn
@@ -209,7 +209,7 @@ resource "aws_lb_listener" "nginx_http" {
 #   load_balancer_arn = aws_lb.nginx_alb.arn
 #   port              = 443
 #   protocol          = "HTTPS"
-  
+
 #   default_action {
 #     type             = "forward"
 #     target_group_arn = aws_lb_target_group.nginx_tg_https.arn
@@ -229,7 +229,7 @@ resource "aws_eks_node_group" "main" {
   }
 
   launch_template {
-    id = aws_launch_template.eks_node_launch_template.id
+    id      = aws_launch_template.eks_node_launch_template.id
     version = "$Latest"
   }
 }
@@ -238,7 +238,7 @@ resource "aws_launch_template" "eks_node_launch_template" {
   name_prefix   = "eks-node-launch-template"
   instance_type = "t3.small"
   image_id      = "ami-010feaf9c3bddd955" # Optimized AMI for EKS worker nodes us-east-2
-  
+
   vpc_security_group_ids = [
     aws_security_group.eks_nodes_sg.id,
   ]
@@ -288,40 +288,40 @@ resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
 resource "aws_security_group" "eks_nodes_sg" {
   name        = "${var.cluster_name}-eks-nodes-sg"
   description = "Security group for EKS nodes to receive traffic from ALB"
-  vpc_id      = var.vpc_id  # Make sure this is the ID of your VPC
+  vpc_id      = var.vpc_id # Make sure this is the ID of your VPC
 
   # All traffic from EKS cluster
   ingress {
-    description      = "Allow traffic from master nodes to worker nodes"
-    from_port        = 30000
-    to_port          = 32767
-    protocol         = "tcp"
-    security_groups  = [var.cluster_sg_id]
+    description     = "Allow traffic from master nodes to worker nodes"
+    from_port       = 30000
+    to_port         = 32767
+    protocol        = "tcp"
+    security_groups = [var.cluster_sg_id]
   }
 
   ingress {
-    description      = "Allow traffic from ALB to NodePort range"
-    from_port        = 30000
-    to_port          = 32767
-    protocol         = "tcp"
-    security_groups  = [aws_security_group.alb_sg.id]  # Reference the ALB's security group
+    description     = "Allow traffic from ALB to NodePort range"
+    from_port       = 30000
+    to_port         = 32767
+    protocol        = "tcp"
+    security_groups = [aws_security_group.alb_sg.id] # Reference the ALB's security group
   }
 
   # Allow EKS nodes to communicate freely within the VPC
   ingress {
-    description      = "Intra-VPC communication"
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = [var.vpc_cidr]  # Reference the VPC's CIDR block
+    description = "Intra-VPC communication"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [var.vpc_cidr] # Reference the VPC's CIDR block
   }
 
   egress {
-    description      = "Allow all outbound traffic from the EKS nodes"
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
+    description = "Allow all outbound traffic from the EKS nodes"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
