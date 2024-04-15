@@ -1,7 +1,7 @@
 terraform {
   required_version = ">= 0.14"
   backend "s3" {
-    bucket = "nadav-project"
+    bucket = "devops-project-terraform"
     key    = "eks/terraform.tfstate"
     region = "us-east-2"
   }

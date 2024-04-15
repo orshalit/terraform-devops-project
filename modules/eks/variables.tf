@@ -15,7 +15,7 @@ variable "aws_profile" {
 variable "cluster_name" {
   description = "The name of the EKS cluster"
   type        = string
-  default     = "nadav-proj-eks-cluster"
+  default     = "devops-proj-eks-cluster"
 }
 
 variable "eks_version" {
@@ -27,5 +27,5 @@ variable "eks_version" {
 variable "private_subnet_ids" {
   description = "The IDs of the private subnets"
   type        = list(string)
-  default     = ["subnet-05528d6fe1dbb40cd", "subnet-00ee6a2ef24ed89d7", "subnet-0c28beef4f48b0f56"]
+  default     = ["subnet-0d36f7eac6b6bb969", "subnet-005d2a3a0b0329a52", "subnet-02b79d9fa28e64a36"]
 }
