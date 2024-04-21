@@ -27,5 +27,31 @@ variable "eks_version" {
 variable "private_subnet_ids" {
   description = "The IDs of the private subnets"
   type        = list(string)
-  default     = ["subnet-0d36f7eac6b6bb969", "subnet-005d2a3a0b0329a52", "subnet-02b79d9fa28e64a36"]
+  default     = ["subnet-04e9fd650ff5409f4", "subnet-07b1db528afcb0538", "subnet-01fdf80bbfeb50e16"]
+}
+variable "node_group_desired_size" {
+  description = "Desired number of nodes in the node group"
+  default     = 1
+}
+
+variable "node_group_max_size" {
+  description = "Maximum number of nodes in the node group"
+  default     = 3
+}
+
+variable "node_group_min_size" {
+  description = "Minimum number of nodes in the node group"
+  default     = 1
+}
+
+variable "instance_types" {
+  type        = list(string)
+  description = "List of EC2 instance types for the node group"
+  default = ["t3.small"]
+}
+
+variable "ami_type" {
+  type        = string
+  description = "AMI type for the nodes"
+  default     = "AL2_x86_64"
 }
