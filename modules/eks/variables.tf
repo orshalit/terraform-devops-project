@@ -15,7 +15,7 @@ variable "aws_profile" {
 variable "cluster_name" {
   description = "The name of the EKS cluster"
   type        = string
-  default     = "nadav-proj-eks-cluster"
+  default     = "devops-proj-eks-cluster"
 }
 
 variable "eks_version" {
@@ -27,5 +27,31 @@ variable "eks_version" {
 variable "private_subnet_ids" {
   description = "The IDs of the private subnets"
   type        = list(string)
-  default     = ["subnet-05528d6fe1dbb40cd", "subnet-00ee6a2ef24ed89d7", "subnet-0c28beef4f48b0f56"]
+  default     = ["subnet-04e9fd650ff5409f4", "subnet-07b1db528afcb0538", "subnet-01fdf80bbfeb50e16"]
+}
+variable "node_group_desired_size" {
+  description = "Desired number of nodes in the node group"
+  default     = 1
+}
+
+variable "node_group_max_size" {
+  description = "Maximum number of nodes in the node group"
+  default     = 3
+}
+
+variable "node_group_min_size" {
+  description = "Minimum number of nodes in the node group"
+  default     = 1
+}
+
+variable "instance_types" {
+  type        = list(string)
+  description = "List of EC2 instance types for the node group"
+  default = ["t3.small"]
+}
+
+variable "ami_type" {
+  type        = string
+  description = "AMI type for the nodes"
+  default     = "AL2_x86_64"
 }

@@ -18,6 +18,30 @@ resource "aws_eks_cluster" "main" {
   }
 }
 
+# Node Group for EKS cluster
+resource "aws_eks_node_group" "main" {
+  cluster_name    = aws_eks_cluster.main.name
+  node_group_name = "${var.cluster_name}-node-group"
+  node_role_arn   = aws_iam_role.eks_node_role.arn  # Role ARN created for the EKS nodes
+  subnet_ids      = var.private_subnet_ids
+
+  scaling_config {
+    desired_size = var.node_group_desired_size
+    max_size     = var.node_group_max_size
+    min_size     = var.node_group_min_size
+  }
+
+  instance_types = var.instance_types # Choose instance type based on cost and sizing considerations
+
+  # Optionally, define your own AMI
+  # ami_type = "AL2_x86_64"
+
+  depends_on = [
+    aws_iam_role_policy_attachment.eks_node_group_worker_node_policy,
+    aws_iam_role_policy_attachment.eks_node_group_cni_policy,
+    aws_iam_role_policy_attachment.eks_node_group_amazon_ec2_container_registry_readonly,
+  ]
+}
 
 # IAM role for EKS cluster
 resource "aws_iam_role" "eks_cluster_role" {
@@ -37,6 +61,22 @@ resource "aws_iam_role" "eks_cluster_role" {
   })
 }
 
+# IAM role for EKS nodes
+resource "aws_iam_role" "eks_node_role" {
+  name = "${var.cluster_name}-eks-node-role"
+
+  assume_role_policy = jsonencode({
+    Version   = "2012-10-17",
+    Statement = [{
+      Effect    = "Allow",
+      Principal = {
+        Service = "ec2.amazonaws.com"
+      },
+      Action    = "sts:AssumeRole"
+    }]
+  })
+}
+
 # Managed policy attachment for EKS cluster role (Required policies by AWS)
 resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
   role       = aws_iam_role.eks_cluster_role.name
@@ -47,6 +87,23 @@ resource "aws_iam_role_policy_attachment" "eks_vpc_resource_policy" {
   role       = aws_iam_role.eks_cluster_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController" # Allows EKS to manage cluster-related VPC resource
 }
+
+# Managed policy attachment for EKS node group role (Required policies by AWS)
+resource "aws_iam_role_policy_attachment" "eks_node_group_worker_node_policy" {
+  role       = aws_iam_role.eks_node_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+}
+
+resource "aws_iam_role_policy_attachment" "eks_node_group_cni_policy" {
+  role       = aws_iam_role.eks_node_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+}
+
+resource "aws_iam_role_policy_attachment" "eks_node_group_amazon_ec2_container_registry_readonly" {
+  role       = aws_iam_role.eks_node_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+}
+
 
 resource "local_file" "kubeconfig" {
   content  = <<EOF
