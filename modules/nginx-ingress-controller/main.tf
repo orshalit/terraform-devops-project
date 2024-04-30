@@ -29,86 +29,86 @@ resource "helm_release" "nginx_ingress" {
     name  = "controller.service.annotations.service\\.beta\\.kubernetes\\.io/aws-load-balancer-subnets"
     value = var.public_subnet_ids
   }
-  depends_on = [aws_eks_node_group.main]
+  # depends_on = [aws_eks_node_group.main]
 }
 
-# data "aws_iam_policy_document" "alb_ingress_policy" {
-#   statement {
-#     actions = [
-#       "acm:DescribeCertificate",
-#       "acm:ListCertificates",
-#       "acm:GetCertificate"
-#     ]
-#     resources = ["*"]
-#   }
+data "aws_iam_policy_document" "alb_ingress_policy" {
+  statement {
+    actions = [
+      "acm:DescribeCertificate",
+      "acm:ListCertificates",
+      "acm:GetCertificate"
+    ]
+    resources = ["*"]
+  }
 
-#   statement {
-#     actions = [
-#       "ec2:DescribeInstances",
-#       "ec2:DescribeNetworkInterfaces",
-#       "ec2:DescribeSecurityGroups",
-#       "ec2:DescribeSubnets",
-#       "ec2:DescribeTags",
-#       "ec2:DescribeVpcs",
-#       "ec2:DescribeRegions"
-#       # Potentially add additional EC2 permissions as required
-#     ]
-#     resources = ["*"]
-#   }
+  statement {
+    actions = [
+      "ec2:DescribeInstances",
+      "ec2:DescribeNetworkInterfaces",
+      "ec2:DescribeSecurityGroups",
+      "ec2:DescribeSubnets",
+      "ec2:DescribeTags",
+      "ec2:DescribeVpcs",
+      "ec2:DescribeRegions"
+      # Potentially add additional EC2 permissions as required
+    ]
+    resources = ["*"]
+  }
 
-#   statement {
-#     actions = [
-#       "elasticloadbalancing:DescribeLoadBalancers",
-#       "elasticloadbalancing:DescribeLoadBalancerAttributes",
-#       "elasticloadbalancing:DescribeListeners",
-#       "elasticloadbalancing:DescribeListenerCertificates",
-#       "elasticloadbalancing:DescribeSSLPolicies",
-#       "elasticloadbalancing:DescribeRules",
-#       "elasticloadbalancing:DescribeTargetGroups",
-#       "elasticloadbalancing:DescribeTargetGroupAttributes",
-#       "elasticloadbalancing:DescribeTargetHealth",
-#       "elasticloadbalancing:CreateLoadBalancer",
-#       "elasticloadbalancing:CreateTargetGroup",
-#       "elasticloadbalancing:DeleteTargetGroup",
-#       "elasticloadbalancing:ModifyLoadBalancerAttributes",
-#       "elasticloadbalancing:AddTags",
-#       "elasticloadbalancing:RemoveTags",
-#       "elasticloadbalancing:ModifyTargetGroup",
-#       "elasticloadbalancing:RegisterTargets",
-#       "elasticloadbalancing:DeregisterTargets",
-#       "elasticloadbalancing:DeleteLoadBalancer",
-#       "elasticloadbalancing:ModifyListener",
-#       "elasticloadbalancing:AddListenerCertificates",
-#       "elasticloadbalancing:RemoveListenerCertificates",
-#       # Potentially add additional ELB permissions as required
-#     ]
-#     resources = ["*"]
-#   }
+  statement {
+    actions = [
+      "elasticloadbalancing:DescribeLoadBalancers",
+      "elasticloadbalancing:DescribeLoadBalancerAttributes",
+      "elasticloadbalancing:DescribeListeners",
+      "elasticloadbalancing:DescribeListenerCertificates",
+      "elasticloadbalancing:DescribeSSLPolicies",
+      "elasticloadbalancing:DescribeRules",
+      "elasticloadbalancing:DescribeTargetGroups",
+      "elasticloadbalancing:DescribeTargetGroupAttributes",
+      "elasticloadbalancing:DescribeTargetHealth",
+      "elasticloadbalancing:CreateLoadBalancer",
+      "elasticloadbalancing:CreateTargetGroup",
+      "elasticloadbalancing:DeleteTargetGroup",
+      "elasticloadbalancing:ModifyLoadBalancerAttributes",
+      "elasticloadbalancing:AddTags",
+      "elasticloadbalancing:RemoveTags",
+      "elasticloadbalancing:ModifyTargetGroup",
+      "elasticloadbalancing:RegisterTargets",
+      "elasticloadbalancing:DeregisterTargets",
+      "elasticloadbalancing:DeleteLoadBalancer",
+      "elasticloadbalancing:ModifyListener",
+      "elasticloadbalancing:AddListenerCertificates",
+      "elasticloadbalancing:RemoveListenerCertificates",
+      # Potentially add additional ELB permissions as required
+    ]
+    resources = ["*"]
+  }
 
-#   statement {
-#     actions = [
-#       "iam:CreateServiceLinkedRole"
-#     ]
-#     resources = ["*"]
-#     condition {
-#       test     = "StringEquals"
-#       variable = "iam:AWSServiceName"
-#       values   = ["elasticloadbalancing.amazonaws.com"]
-#     }
-#   }
-# }
+  statement {
+    actions = [
+      "iam:CreateServiceLinkedRole"
+    ]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "iam:AWSServiceName"
+      values   = ["elasticloadbalancing.amazonaws.com"]
+    }
+  }
+}
 
-# resource "aws_iam_policy" "nginx_ingress_alb_policy" {
-#   name        = "NginxIngressALBPolicy"
-#   path        = "/"
-#   description = "Policy for allowing NGINX Ingress to manage AWS ALB resources"
-#   policy      = data.aws_iam_policy_document.alb_ingress_policy.json
-# }
+resource "aws_iam_policy" "nginx_ingress_alb_policy" {
+  name        = "NginxIngressALBPolicy"
+  path        = "/"
+  description = "Policy for allowing NGINX Ingress to manage AWS ALB resources"
+  policy      = data.aws_iam_policy_document.alb_ingress_policy.json
+}
 
-# resource "aws_iam_role_policy_attachment" "nginx_ingress_alb_attach" {
-#   policy_arn = aws_iam_policy.nginx_ingress_alb_policy.arn
-#   role       = var.eks_worker_node_role_name # Make sure to use the actual IAM role of your EKS worker nodes
-# }
+resource "aws_iam_role_policy_attachment" "nginx_ingress_alb_attach" {
+  policy_arn = aws_iam_policy.nginx_ingress_alb_policy.arn
+  role       = var.eks_worker_node_role_name # Make sure to use the actual IAM role of your EKS worker nodes
+}
 
 resource "aws_security_group" "alb_sg" {
   name        = "alb-sg"
@@ -145,7 +145,7 @@ resource "aws_security_group" "alb_sg" {
 }
 
 resource "aws_lb" "nginx_alb" {
-  name               = "${var.cluster_name}-nginx-alb"
+  name               = "${var.cluster_name}-nginx"
   internal           = false
   load_balancer_type = "application"
   subnets            = var.public_subnet_ids
@@ -154,6 +154,14 @@ resource "aws_lb" "nginx_alb" {
   tags = {
     Name = "${var.cluster_name}-nginx-alb"
   }
+}
+
+data "aws_instances" "instance_list" {
+  instance_tags = {
+    "eks:nodegroup-name" = "devops-proj-eks-cluster-node-group"  # Filter instances by tag
+  }
+
+  instance_state_names = ["running"]  # Filter instances by state
 }
 
 resource "aws_lb_target_group" "nginx_tg_http" {
@@ -172,7 +180,7 @@ resource "aws_lb_target_group" "nginx_tg_http" {
     unhealthy_threshold = 3
   }
 
-  target_type = "ip"
+  target_type = "instance"
 }
 
 resource "aws_lb_listener" "nginx_http" {
@@ -184,6 +192,28 @@ resource "aws_lb_listener" "nginx_http" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.nginx_tg_http.arn
   }
+}
+
+resource "aws_lb_listener_rule" "nginx_http_rule" {
+  listener_arn = aws_lb_listener.nginx_http.arn
+  priority     = 100
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.nginx_tg_http.arn
+  }
+
+  condition {
+    host_header {
+      values = ["example.com"]
+    }
+  }
+}
+
+resource "aws_lb_target_group_attachment" "nginx_tg_attachment" {
+  count            = length(data.aws_instances.instance_list.ids)
+  target_group_arn = aws_lb_target_group.nginx_tg_http.arn
+  target_id        = data.aws_instances.instance_list.ids[count.index]
 }
 
 # resource "aws_lb_target_group" "nginx_tg_https" {
@@ -216,23 +246,23 @@ resource "aws_lb_listener" "nginx_http" {
 #   }
 # }
 
-resource "aws_eks_node_group" "main" {
-  cluster_name    = var.cluster_name
-  node_group_name = "${var.cluster_name}-node-group"
-  node_role_arn   = aws_iam_role.eks_node_role.arn # Role ARN created for the EKS nodes
-  subnet_ids      = var.private_subnet_ids
+# resource "aws_eks_node_group" "main" {
+#   cluster_name    = var.cluster_name
+#   node_group_name = "${var.cluster_name}-node-group"
+#   node_role_arn   = var.node_group_role # Role ARN created for the EKS nodes
+#   subnet_ids      = var.private_subnet_ids
 
-  scaling_config {
-    desired_size = 1
-    max_size     = 3
-    min_size     = 1
-  }
+#   scaling_config {
+#     desired_size = 1
+#     max_size     = 3
+#     min_size     = 1
+#   }
 
-  launch_template {
-    id      = aws_launch_template.eks_node_launch_template.id
-    version = "$Latest"
-  }
-}
+#   launch_template {
+#     id      = aws_launch_template.eks_node_launch_template.id
+#     version = "$Latest"
+#   }
+# }
 
 resource "aws_launch_template" "eks_node_launch_template" {
   name_prefix   = "eks-node-launch-template"
@@ -250,39 +280,39 @@ resource "aws_launch_template" "eks_node_launch_template" {
   }
 }
 
-# IAM role for EKS worker nodes
-resource "aws_iam_role" "eks_node_role" {
-  name = "${var.cluster_name}-eks-node-role"
+# # IAM role for EKS worker nodes
+# resource "aws_iam_role" "eks_node_role" {
+#   name = "${var.cluster_name}-eks-node-role"
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        },
-        Action = "sts:AssumeRole"
-      },
-    ],
-  })
-}
+#   assume_role_policy = jsonencode({
+#     Version = "2012-10-17",
+#     Statement = [
+#       {
+#         Effect = "Allow",
+#         Principal = {
+#           Service = "ec2.amazonaws.com"
+#         },
+#         Action = "sts:AssumeRole"
+#       },
+#     ],
+#   })
+# }
 
-# Managed policy attachment for EKS worker nodes role
-resource "aws_iam_role_policy_attachment" "eks_worker_node_policy" {
-  role       = aws_iam_role.eks_node_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-}
+# # Managed policy attachment for EKS worker nodes role
+# resource "aws_iam_role_policy_attachment" "eks_worker_node_policy" {
+#   role       = aws_iam_role.eks_node_role.name
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+# }
 
-resource "aws_iam_role_policy_attachment" "eks_cni_policy" {
-  role       = aws_iam_role.eks_node_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy" # Required for EKS CNI plugin
-}
+# resource "aws_iam_role_policy_attachment" "eks_cni_policy" {
+#   role       = aws_iam_role.eks_node_role.name
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy" # Required for EKS CNI plugin
+# }
 
-resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
-  role       = aws_iam_role.eks_node_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly" # Allows nodes to pull images from ECR
-}
+# resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
+#   role       = aws_iam_role.eks_node_role.name
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly" # Allows nodes to pull images from ECR
+# }
 
 # Security Group for EKS Nodes to allow traffic from ALB
 resource "aws_security_group" "eks_nodes_sg" {
@@ -328,3 +358,4 @@ resource "aws_security_group" "eks_nodes_sg" {
     Name = "${var.cluster_name}-eks-nodes"
   }
 }
+

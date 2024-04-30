@@ -1,11 +1,11 @@
 locals {
-  kubeconfig = "./new-kubeconfig.conf"
+  kubeconfig = "C:\\Users\\97250\\.kube\\new-kubeconfig.conf"
 }
 
 terraform {
   required_version = ">= 0.14"
   backend "s3" {
-    bucket = "nadav-project"
+    bucket = "devops-project-terraform"
     key    = "aws-load-balancer-controller/terraform.tfstate"
     region = "us-east-2"
   }
