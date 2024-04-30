@@ -27,7 +27,7 @@ variable "eks_version" {
 variable "private_subnet_ids" {
   description = "The IDs of the private subnets"
   type        = list(string)
-  default     = ["subnet-04e9fd650ff5409f4", "subnet-07b1db528afcb0538", "subnet-01fdf80bbfeb50e16"]
+  default     = ["subnet-09af63e01d1c7f045", "subnet-0ab762180ab21432f", "subnet-057c8ab28fe57e075"]
 }
 variable "node_group_desired_size" {
   description = "Desired number of nodes in the node group"

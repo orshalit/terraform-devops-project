@@ -7,7 +7,7 @@ variable "region" {
 variable "aws_account_id" {
   description = "The AWS account ID"
   type        = string
-  default     = "445521015129"
+  default     = "992382397622"
 }
 
 variable "aws_profile" {
@@ -19,7 +19,7 @@ variable "aws_profile" {
 variable "cluster_name" {
   description = "The name of the EKS cluster"
   type        = string
-  default     = "nadav-proj-eks-cluster"
+  default     = "devops-proj-eks-cluster"
 }
 
 variable "eks_version" {
@@ -31,17 +31,17 @@ variable "eks_version" {
 variable "private_subnet_ids" {
   description = "The IDs of the private subnets"
   type        = list(string)
-  default     = ["subnet-05528d6fe1dbb40cd", "subnet-00ee6a2ef24ed89d7", "subnet-0c28beef4f48b0f56"]
+  default     = ["subnet-09af63e01d1c7f045", "subnet-0ab762180ab21432f", "subnet-057c8ab28fe57e075"]
 }
 
 variable "public_subnet_ids" {
   description = "The IDs of the public subnets"
   type        = list(string)
-  default     = ["subnet-085f161b2986033ee", "subnet-0e39fd76a2875e0c7", "subnet-02c71f53bdf8ab51f"]
+  default     = ["subnet-08fba0a8d0f738a14", "subnet-08839ba36382a5256", "subnet-0c12574b0c864e79b "]
 }
 
 variable "eks_worker_node_role_name" {
   description = "The name of the IAM role for the EKS worker nodes"
   type        = string
-  default     = "nadav-proj-eks-cluster-eks-node-role"
+  default     = "devops-proj-eks-cluster-eks-node-role"
 }

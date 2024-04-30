@@ -7,7 +7,7 @@ variable "region" {
 variable "vpc_name" {
   description = "The name of the VPC"
   type        = string
-  default     = "nadav-proj-vpc"
+  default     = "devops-proj-vpc"
 }
 
 variable "vpc_cidr" {
@@ -18,7 +18,7 @@ variable "vpc_cidr" {
 variable "public_subnet_name" {
   description = "The name of the public subnet"
   type        = string
-  default     = "nadav-proj-public-subnet"
+  default     = "devops-proj-public-subnet"
 }
 
 variable "public_subnet_cidr" {
@@ -30,7 +30,7 @@ variable "public_subnet_cidr" {
 variable "private_subnet_name" {
   description = "The name of the private subnet"
   type        = string
-  default     = "nadav-proj-private-subnet"
+  default     = "devops-proj-private-subnet"
 }
 
 variable "private_subnet_cidr" {
@@ -43,19 +43,19 @@ variable "private_subnet_cidr" {
 variable "public_route_table_name" {
   description = "The name of the public route table"
   type        = string
-  default     = "nadav-proj-public-rt"
+  default     = "devops-proj-public-rt"
 }
 
 variable "private_route_table_name" {
   description = "The name of the private route table"
   type        = string
-  default     = "nadav-proj-private-rt"
+  default     = "devops-proj-private-rt"
 }
 
 variable "nat_gw_name" {
   description = "The name of the NAT gateway"
   type        = string
-  default     = "nadav-proj-nat-gw"
+  default     = "devops-proj-nat-gw"
 }
 
 variable "availability_zones" {
@@ -67,13 +67,13 @@ variable "availability_zones" {
 variable "igw_name" {
   description = "The name of the internet gateway"
   type        = string
-  default     = "nadav-proj-igw"
+  default     = "devops-proj-igw"
 }
 
 variable "cluster_name" {
   description = "The name of the EKS cluster"
   type        = string
-  default     = "nadav-proj-eks-cluster"
+  default     = "devops-proj-eks-cluster"
 
 }
 

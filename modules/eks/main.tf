@@ -30,6 +30,7 @@ resource "aws_eks_node_group" "main" {
     max_size     = var.node_group_max_size
     min_size     = var.node_group_min_size
   }
+  
 
   instance_types = var.instance_types # Choose instance type based on cost and sizing considerations
 
